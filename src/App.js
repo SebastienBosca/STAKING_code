@@ -104,7 +104,7 @@ class App extends Component {
 
   WACR = async() => {
     const { accounts, contract1, web3 } = this.state;
-    await contract1.methods.WithdrawaAllAndClaimRewards().send({from: accounts[0]});
+    await contract1.methods.WithdrawAllAndClaimRewards().send({from: accounts[0]});
     this.runInit();
   }
 
@@ -121,7 +121,7 @@ class App extends Component {
       <div className="App">
 
         <div>
-            <h2 className="text-center">ETH Vault</h2>
+            <h2 className="text-center">ETH Vault 19.6% APY </h2>
             <hr></hr>
             <br></br>
         </div>
