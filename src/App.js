@@ -6,13 +6,14 @@ import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Table from 'react-bootstrap/Table';
 import Staking from "./contracts/Staking.json";
+import ReWarD from "./contracts/ReWarD.json";
 import ChainlinkETHprice from "./contracts/ChainlinkETHprice.json";
 import getWeb3 from "./getWeb3";
 import "./App.css"; 
 
 
 class App extends Component {
-  state = { web3: null, accounts: null, contract1: null, contract2: null }; 
+  state = { web3: null, accounts: null, contract1: null, contract2: null, contract3: null }; 
 
   componentWillMount = async () => {
     try {
@@ -24,7 +25,7 @@ class App extends Component {
 
       // Récupérer l’instance du smart contract “Staking” avec web3 et les informations du déploiement du fichier (client/src/contracts/Staking.json)
   
-      const instance1 = new web3.eth.Contract(
+        const instance1 = new web3.eth.Contract(
         Staking.abi,
         "0x0b3Ea9166a64a8d1B3748d3B4386902cd7415efC", 
       );
@@ -32,8 +33,12 @@ class App extends Component {
         ChainlinkETHprice.abi,
         "0x57EF9887279a27F1a895918defC2a0443113ff93", 
       );
+        const instance3 = new web3.eth.Contract(
+        ReWarD.abi,
+        "0xF230C7E192374C6a5421CD6286862d73472C8E0a", 
+      );
  
-      this.setState({ web3, accounts, contract1: instance1, contract2: instance2 }, this.runInit);
+      this.setState({ web3, accounts, contract1: instance1, contract2: instance2, contract3: instance3 }, this.runInit);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -44,7 +49,7 @@ class App extends Component {
   };
 
   runInit = async() => {
-    const { accounts, contract1, contract2 } = this.state;
+    const { accounts, contract1, contract2, contract3 } = this.state;
   
     // récupérer la TVL
     const ETHTVL = await contract1.methods.getETHTVL().call();
@@ -59,16 +64,18 @@ class App extends Component {
 
     // récupérer le prix de l'ETH avec Chainlink
     const price = await contract2.methods.getLatestPrice().call();
- 
+
+    //récupérer le montant de récompenses acquis 
+    const OldRewards= await contract1.methods.getOldRewards().call();
 
     // Mettre à jour le state 
-   this.setState({ETHTVL:ETHTVL, ContractBalance:ContractBalance, balance:balance, price:price });
+   this.setState({ETHTVL:ETHTVL, ContractBalance:ContractBalance, balance:balance, price:price, OldRewards:OldRewards });
   }; 
 
 
 
   DEPOSIT = async() => {
-    const { accounts, contract1, contract2, web3 } = this.state;
+    const { accounts, contract1, contract2, contract3, web3 } = this.state;
     const DamountWei = web3.utils.toWei(this.Damount.value, 'ether');   
   await contract1.methods.deposit().send({from: accounts[0], value: DamountWei});
   this.runInit();
@@ -90,7 +97,7 @@ class App extends Component {
 
 
   render() {
-    const { ETHTVL, ContractBalance, balance, price} = this.state;
+    const { ETHTVL, ContractBalance, balance, price, OldRewards} = this.state;
    
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -108,9 +115,9 @@ class App extends Component {
             <Card.Header><strong> ETH price : {price} $ </strong></Card.Header>
             <Card.Header><strong>TVL : {ETHTVL/1000000000000000000} ETH </strong></Card.Header>
             <Card.Header><strong>Contract Balance: {ContractBalance/1000000000000000000} </strong></Card.Header>
-            <Card.Header><strong>Number of active users: kl  </strong></Card.Header>
-            <Card.Header><strong>Your staked balance: {balance/1000000000000000000}  </strong></Card.Header>
-            <Card.Header><strong>Your index: blob </strong></Card.Header>
+            <Card.Header><strong>Your staked balance: {balance}  </strong></Card.Header>
+            <Card.Header><strong>Your rewards stored on-chain: {balance}  </strong></Card.Header>
+            
           </Card>
         </div>
         <br></br>
