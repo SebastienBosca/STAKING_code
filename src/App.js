@@ -26,7 +26,7 @@ class App extends Component {
   
       const instance1 = new web3.eth.Contract(
         Staking.abi,
-        "0x160b5C307bB8570050D67cc97dD6f50DB89F661D", 
+        "0x0b3Ea9166a64a8d1B3748d3B4386902cd7415efC", 
       );
         const instance2 = new web3.eth.Contract(
         ChainlinkETHprice.abi,
@@ -68,16 +68,16 @@ class App extends Component {
 
 
   DEPOSIT = async() => {
-    const { accounts, contract, web3 } = this.state;
+    const { accounts, contract1, contract2, web3 } = this.state;
     const DamountWei = web3.utils.toWei(this.Damount.value, 'ether');   
-  await contract.methods.deposit().send({from: accounts[0], value: DamountWei});
+  await contract1.methods.deposit().send({from: accounts[0], value: DamountWei});
   this.runInit();
 }
   
   WITHDRAW = async() => {
-    const { accounts, contract, web3 } = this.state;
+    const { accounts, contract1, contract2, web3 } = this.state;
     const WamountWei = web3.utils.toWei(this.Wamount.value, 'ether');  
-    await contract.methods.withdrawal(WamountWei).send({from: accounts[0]});
+    await contract1.methods.withdrawal(WamountWei).send({from: accounts[0]});
     this.runInit();
   }
  
