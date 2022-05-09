@@ -26,7 +26,7 @@ class App extends Component {
   
         const instance1 = new web3.eth.Contract(
         Staking.abi,
-        "0xF230C7E192374C6a5421CD6286862d73472C8E0a", 
+        "0xeD1dD142c33d45Ed8803634b31A22E0ad3b34199", 
       );
         const instance2 = new web3.eth.Contract(
         ChainlinkETHprice.abi,
